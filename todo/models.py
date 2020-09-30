@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-
-# Create your models here.
 from django.utils import timezone
+
+from simple_history.models import HistoricalRecords
 
 
 class Task(models.Model):
@@ -19,7 +19,9 @@ class Task(models.Model):
     planned_by = models.DateTimeField(validators=[MinValueValidator(limit_value=timezone.now())])
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
-        return self.title + ', ' + self.status + ', ' + self.created.strftime('%Y-%m-%d %H:%M') + ' - ' + self.planned_by.strftime(
+        return self.title + ', ' + self.status + ', ' + self.created.strftime(
+            '%Y-%m-%d %H:%M') + ' - ' + self.planned_by.strftime(
             '%Y-%m-%d %H:%M') + ', ' + self.author.first_name + " " + self.author.last_name
