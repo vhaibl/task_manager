@@ -38,3 +38,6 @@ POST yourserver/auth/password/change/
 "new_password1": "пароль"  
 "new_password2": "подтверждение пароля"} 
 ```
+
+
+ALTER USER django_admin CREATEDB;

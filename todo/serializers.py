@@ -9,16 +9,13 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('title', 'description', 'status', 'planned_by', 'created', 'author', 'history')
+        fields = ('title', 'description', 'status', 'planned_by', 'created', 'author', 'id', 'history')
         read_only_fields = ('history',)
 
     def get_history(self, obj):
-        # using slicing to exclude current field values
-        h = obj.history.all().values('title', 'description', 'status', 'planned_by', 'created', 'author')[1:]
-        return h
+        return obj.history.all().values('title', 'description', 'status', 'planned_by', 'created', 'author')[1:]
 
     def validate_author(self, value):
-        print(self.context['request'].user)
         if not self.context['request'].user.is_superuser:
             if value != self.context['request'].user:
                 raise ValidationError('Wrong author')
@@ -34,12 +31,4 @@ class FieldSerializer(serializers.ModelSerializer):
         read_only_fields = ('history',)
 
     def get_history(self, obj):
-        h = obj.history.all().values('title', 'description', 'status', 'planned_by', 'created', 'author')[1:]
-        return h
-
-    def validate_author(self, value):
-        print(self.context['request'].user)
-        if not self.context['request'].user.is_superuser:
-            if value != self.context['request'].user:
-                raise ValidationError('Wrong author')
-        return value
+        return obj.history.all().values('title', 'description', 'status', 'planned_by', 'created', 'author')[1:]
