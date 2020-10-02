@@ -39,5 +39,6 @@ POST yourserver/auth/password/change/
 "new_password2": "подтверждение пароля"} 
 ```
 
-
-ALTER USER django_admin CREATEDB;
+### Тесты:
+для тестов создается база SQLite (удаляется по заверщению автоматически)
+Отчёт Coverage в /htmlconv/ (покрытие приложения 'todo' - 100%)

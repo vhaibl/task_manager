@@ -56,7 +56,7 @@ class TaskViewSet(mixins.ListModelMixin,
             return Task.objects.filter(author=self.request.user)
 
     @action(methods=['get'], detail=True)
-    def me(self, request, pk, *args, **kwargs):
+    def history(self, request, pk, *args, **kwargs):
         if self.request.user.is_superuser:
             queryset = Task.objects.filter(pk=pk)
         else:
