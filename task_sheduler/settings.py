@@ -21,14 +21,46 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = '38$en(1g1mg819cnfg(!nzz+y79nxmtm@m+x^bmczhb$$0)q^f'
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = int(os.environ.get("DEBUG", default=0))
+if 'Windows' in os.environ['OS']:
+    SECRET_KEY = "SMESECKETKEY"
+    ALLOWED_HOSTS = []
+    DEBUG = 1
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": 'tododb',
+            "USER": 'django_admin',
+            "PASSWORD": 'django_pass',
+            "HOST": "localhost",
+            "PORT": "5432",
+            'TEST': {
+                'NAME': 'test_todo'
 
+            }
+        }
+    }
+else:
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    DEBUG = int(os.environ.get("DEBUG", default=0))
+    ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+            "USER": os.environ.get("SQL_USER", "user"),
+            "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+            "HOST": os.environ.get("SQL_HOST", "localhost"),
+            "PORT": os.environ.get("SQL_PORT", "5432"),
+            'TEST': {
+                'NAME': 'test_todo'
+
+            }
+        }
+    }
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -86,21 +118,8 @@ WSGI_APPLICATION = 'task_sheduler.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
-        'TEST': {
-            'NAME': 'test_todo'
 
-        }
-    }
-}
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+if 'test' in sys.argv or 'test_coverage' in sys.argv:  # Covers regular testing and django-coverage
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -146,3 +165,4 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+

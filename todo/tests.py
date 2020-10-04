@@ -60,11 +60,11 @@ class SnippetTestCase(APITestCase):
     def test_update_post_and_get_history_as_user(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token_low))
 
-        update = self.client.put('/tasks/1/',
-                                 {"title": "POST_________UPDATE", "description": "test case", "status": "PLANNED",
-                                  "planned_by": "2020-10-05T14:15:28Z", "created": "2020-09-29T14:15:32.653024Z",
-                                  "author": 2},
-                                 format='json')
+        self.client.put('/tasks/1/',
+                        {"title": "POST_________UPDATE", "description": "test case", "status": "PLANNED",
+                         "planned_by": "2020-10-05T14:15:28Z", "created": "2020-09-29T14:15:32.653024Z",
+                         "author": 2},
+                        format='json')
 
         api_request = APIRequestFactory().get(path="", HTTP_AUTHORIZATION='Token {}'.format(self.token_low))
         tasks_list = TaskViewSet.as_view({'get': 'history'})
@@ -73,19 +73,19 @@ class SnippetTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_update_post_and_get_history_as_admin(self):
-            self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
 
-            update = self.client.put('/tasks/1/',
-                                     {"title": "POST_________UPDATE", "description": "test case", "status": "PLANNED",
-                                      "planned_by": "2020-10-05T14:15:28Z", "created": "2020-09-29T14:15:32.653024Z",
-                                      "author": 1}, format='json')
+        self.client.put('/tasks/1/',
+                        {"title": "POST_________UPDATE", "description": "test case", "status": "PLANNED",
+                         "planned_by": "2020-10-05T14:15:28Z", "created": "2020-09-29T14:15:32.653024Z",
+                         "author": 1}, format='json')
 
-            api_request = APIRequestFactory().get(path="", HTTP_AUTHORIZATION='Token {}'.format(self.token))
-            tasks_list = TaskViewSet.as_view({'get': 'history'})
-            response = tasks_list(api_request, pk=1)
-            response.render()
-            self.assertEqual(response.status_code, 200)
+        api_request = APIRequestFactory().get(path="", HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        tasks_list = TaskViewSet.as_view({'get': 'history'})
+        response = tasks_list(api_request, pk=1)
+        response.render()
+        self.assertEqual(response.status_code, 200)
 
     def test_get_name(self):
-        rororo = Task.objects.get(id=1)
-        self.assertIn('Create planner', str(rororo))
+        get_task = Task.objects.get(id=1)
+        self.assertIn('Create planner', str(get_task))
